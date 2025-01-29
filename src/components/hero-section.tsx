@@ -1,12 +1,14 @@
-import React from 'react';
-import { PhoneCall, CheckCircle } from 'lucide-react';
+"use client"
+
+import React from "react"
+import { PhoneCall, CheckCircle } from "lucide-react"
 
 export function HeroSection() {
   const benefits = [
     "Never miss another sales opportunity",
     "24/7 AI-powered call handling",
     "Instant lead capture & qualification",
-  ];
+  ]
 
   return (
     <div className="relative">
@@ -20,7 +22,9 @@ export function HeroSection() {
           <div className="text-left space-y-6">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
               <PhoneCall className="w-4 h-4 mr-2 text-cyan-400" />
-              <span className="text-sm text-cyan-200">Never Miss A Call Again</span>
+              <span className="text-sm text-cyan-200">
+                Never Miss A Call Again
+              </span>
             </div>
 
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-200 text-transparent bg-clip-text leading-tight">
@@ -28,7 +32,9 @@ export function HeroSection() {
             </h1>
 
             <p className="text-lg text-gray-400">
-              Service Genie uses AI to handle your missed calls 24/7, ensuring every potential customer gets an immediate response and qualified leads land directly in your inbox.
+              Service Genie uses AI to handle your missed calls 24/7, ensuring
+              every potential customer gets an immediate response and qualified
+              leads land directly in your inbox.
             </p>
 
             <ul className="space-y-3">
@@ -63,5 +69,5 @@ export function HeroSection() {
         </div>
       </div>
     </div>
-  );
+  )
 }

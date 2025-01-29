@@ -1,6 +1,6 @@
 export const heroFeatures = [
   {
-    icon: "✓",
+    icon: "✨",
     title: "Smart Routing",
     description: "AI-powered call distribution"
   },

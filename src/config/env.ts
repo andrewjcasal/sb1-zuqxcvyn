@@ -1,7 +1,0 @@
-export const env = {
-  VITE_FIRECRAWL_API_URL: import.meta.env.VITE_FIRECRAWL_API_URL,
-  VITE_FIRECRAWL_API_KEY: import.meta.env.VITE_FIRECRAWL_API_KEY,
-  VITE_BLAND_API_URL: import.meta.env.VITE_BLAND_API_URL,
-  VITE_BLAND_API_KEY: import.meta.env.VITE_BLAND_API_KEY,
-  VITE_ENABLE_VOICE_CALLS: import.meta.env.VITE_ENABLE_VOICE_CALLS === 'true'
-};

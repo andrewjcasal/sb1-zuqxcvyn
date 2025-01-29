@@ -4,7 +4,7 @@ import { WebsiteForm } from './website-form';
 import { LoadingAnimation } from './loading-animation';
 import { BusinessDetails } from './business-details';
 import { ErrorDisplay } from './error-display';
-import { analyzeSite } from '@/services/firecrawl/api';
+import { analyzeSite } from "@/services/api"
 import { CallDemo } from './call-demo';
 import { APIError } from '@/utils/errors';
 
@@ -16,104 +16,61 @@ interface AnalyzerModalProps {
 export function AnalyzerModal({ isOpen, onClose }: AnalyzerModalProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [analysisState, setAnalysisState] = useState<{
-    business: any | null;
-    phone: string | null;
-    showCallDemo: boolean;
-  }>({
-    business: null,
-    phone: null,
-    showCallDemo: false
-  });
+  const [businessData, setBusinessData] = useState<any>(null)
 
-  const handleSubmit = async ({ url, phone }: { url: string; phone: string }) => {
-    setIsAnalyzing(true);
-    setError(null);
+  const handleSubmit = async (data: { url: string; phone: string }) => {
+    setIsAnalyzing(true)
+    setError(null)
+    setBusinessData(null)
 
     try {
-      const result = await analyzeSite(url);
-      
-      if (!result.business) {
-        throw new APIError('No business data found in the response');
-      }
-
-      setAnalysisState({
-        business: result.business,
-        phone,
-        showCallDemo: false
-      });
-    } catch (error) {
-      console.error('Analysis error:', error);
-      setError(
-        error instanceof APIError 
-          ? error.message 
-          : 'Failed to analyze website. Please try again.'
-      );
+      const result = await analyzeSite(data.url)
+      setBusinessData({
+        ...result,
+        contact: {
+          ...result.business.contact,
+          phone: data.phone,
+        },
+      })
+    } catch (err) {
+      console.error("Analysis error:", err)
+      setError(err instanceof Error ? err.message : "Failed to analyze website")
     } finally {
-      setIsAnalyzing(false);
+      setIsAnalyzing(false)
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="relative bg-[#1A1642]/95 rounded-xl p-6 max-w-md w-full space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div className="relative w-full max-w-2xl bg-gradient-to-b from-[#1A1642] to-[#141034] rounded-2xl shadow-xl">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
-        
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            Website Analysis
-          </h2>
-          <p className="text-gray-300 mt-2">
-            Enter your website URL to analyze
-          </p>
-        </div>
 
-        {error && (
-          <ErrorDisplay 
-            error={error}
-            onRetry={() => {
-              setError(null);
-              setIsAnalyzing(false);
-              setAnalysisState({
-                business: null,
-                phone: null,
-                showCallDemo: false
-              });
-            }}
-          />
-        )}
-
-        {isAnalyzing ? (
-          <LoadingAnimation />
-        ) : analysisState.business ? (
-          analysisState.showCallDemo ? (
-            <CallDemo 
-              business={analysisState.business}
-              phoneNumber={analysisState.phone!}
-            />
+        <div className="p-8">
+          {isAnalyzing ? (
+            <LoadingAnimation />
+          ) : error ? (
+            <ErrorDisplay error={error} onRetry={() => setError(null)} />
+          ) : businessData ? (
+            businessData.business ? (
+              <CallDemo
+                business={businessData.business}
+                phoneNumber={businessData.contact?.phone}
+              />
+            ) : (
+              <BusinessDetails data={businessData} />
+            )
           ) : (
-            <BusinessDetails 
-              data={{ business: analysisState.business }}
-              onContinue={() => setAnalysisState(prev => ({
-                ...prev,
-                showCallDemo: true
-              }))}
-            />
-          )
-        ) : (
-          <WebsiteForm 
-            onSubmit={handleSubmit}
-            isLoading={isAnalyzing}
-          />
-        )}
+            <WebsiteForm onSubmit={handleSubmit} isLoading={isAnalyzing} />
+          )}
+        </div>
       </div>
     </div>
-  );
+  )
 }

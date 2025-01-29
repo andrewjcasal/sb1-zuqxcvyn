@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { HeroFeatureIcon } from './hero/hero-feature-icon';
-import { heroFeatures } from './hero/hero-features';
-import { AnalyzerModal } from '../website-analyzer/analyzer-modal';
+"use client"
+
+import React, { useState } from "react"
+import { Button } from "../ui/button"
+import { HeroFeatureIcon } from "./hero/hero-feature-icon"
+import { heroFeatures } from "./hero/hero-features"
+import { AnalyzerModal } from "../website-analyzer/analyzer-modal"
 
 export function HeroSection() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   return (
     <section className="relative pt-32 pb-24 px-4">
@@ -27,11 +29,12 @@ export function HeroSection() {
           </h1>
 
           <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
-            Focus on growing your business while we handle incoming calls—never miss a lead again.
+            Focus on growing your business while we handle incoming calls—never
+            miss a lead again.
           </p>
 
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="h-14 px-12 text-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all duration-300"
             onClick={() => setIsModalOpen(true)}
           >
@@ -51,10 +54,10 @@ export function HeroSection() {
         </div>
       </div>
 
-      <AnalyzerModal 
+      <AnalyzerModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
     </section>
-  );
+  )
 }

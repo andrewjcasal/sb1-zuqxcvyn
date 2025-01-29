@@ -1,8 +1,6 @@
-import { API_CONFIG } from '@/config/api';
-import { BLAND_CONFIG } from './config';
 import { BusinessInfo } from '@/types/business';
 import { APIError } from '@/utils/errors';
-import { generateCallScript } from './prompts/call-script';
+import { API_ENDPOINTS } from '@/lib/config';
 
 interface CallOptions {
   phoneNumber: string;
@@ -17,15 +15,8 @@ interface CallResponse {
 
 export class CallService {
   private static instance: CallService;
-  private readonly apiKey: string;
 
-  private constructor() {
-    this.apiKey = API_CONFIG.BLAND.KEY;
-
-    if (!this.apiKey) {
-      throw new APIError('Bland.ai API key is required for voice calls');
-    }
-  }
+  private constructor() {}
 
   static getInstance(): CallService {
     if (!CallService.instance) {
@@ -36,24 +27,14 @@ export class CallService {
 
   async initiateCall({ phoneNumber, businessInfo }: CallOptions): Promise<CallResponse> {
     try {
-      const script = generateCallScript(businessInfo);
-
-      const response = await fetch(`${API_CONFIG.BLAND.URL}/v1/calls`, {
+      const response = await fetch(API_ENDPOINTS.CALL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
         },
         body: JSON.stringify({
-          phone_number: phoneNumber,
-          task: script,
-          voice_id: BLAND_CONFIG.VOICE.VOICE_ID,
-          temperature: BLAND_CONFIG.VOICE.TEMPERATURE,
-          reduce_latency: BLAND_CONFIG.VOICE.REDUCE_LATENCY,
-          max_duration: BLAND_CONFIG.CALL.MAX_DURATION,
-          end_on_silence: BLAND_CONFIG.CALL.END_ON_SILENCE,
-          silence_timeout: BLAND_CONFIG.CALL.SILENCE_TIMEOUT,
-          record: BLAND_CONFIG.CALL.RECORD
+          phoneNumber,
+          businessInfo,
         })
       });
 
@@ -71,11 +52,7 @@ export class CallService {
 
   async getCallStatus(callId: string): Promise<CallResponse> {
     try {
-      const response = await fetch(`${API_CONFIG.BLAND.URL}/v1/calls/${callId}`, {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`
-        }
-      });
+      const response = await fetch(`${API_ENDPOINTS.CALL}?callId=${callId}`);
 
       if (!response.ok) {
         throw new APIError('Failed to get call status');
